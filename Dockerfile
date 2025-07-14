@@ -7,12 +7,18 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-ENV TEMPORAL_CLI_VERSION=1.3.0
+ARG TEMPORAL_CLI_VERSION=1.4.0
+ENV TEMPORAL_CLI_VERSION=${TEMPORAL_CLI_VERSION}
 ENV DB_FILE=/data/temporal_file.db
 ENV UI_PORT=8080
 
 # Download and install Temporal CLI
-RUN curl -L https://github.com/temporalio/cli/releases/download/v{$TEMPORAL_CLI_VERSION}/temporal_cli_{$TEMPORAL_CLI_VERSION}_linux_amd64.tar.gz \
+ARG TARGETPLATFORM
+RUN case ${TARGETPLATFORM} in \
+        "linux/amd64") ARCH="amd64" ;; \
+        "linux/arm64") ARCH="arm64" ;; \
+    esac \
+    && curl -L https://github.com/temporalio/cli/releases/download/v${TEMPORAL_CLI_VERSION}/temporal_cli_${TEMPORAL_CLI_VERSION}_linux_${ARCH}.tar.gz \
     -o /tmp/temporal.tar.gz && \
     tar -xzf /tmp/temporal.tar.gz -C /usr/local/bin && \
     rm /tmp/temporal.tar.gz
