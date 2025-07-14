@@ -12,7 +12,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  TEMPORAL_CLI_VERSION: 1.31.0
+  TEMPORAL_CLI_VERSION: 1.4.0
 
 permissions:
   contents: read
@@ -46,6 +46,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           build-args: |
             TEMPORAL_CLI_VERSION=${{ env.TEMPORAL_CLI_VERSION }}
           cache-from: type=gha
